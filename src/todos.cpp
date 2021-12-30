@@ -3,12 +3,15 @@
 #include <iterator>
 
 void todo_list::save_list(const std::string &file) {
-  // std::fstream out(file);
-  // if (out.is_open())
-  //     std::copy(m_todos.begin(), m_todos.end(),
-  //     std::ostream_iterator<todo_list>(out, "\n"));
-  // else {}
-  // // add log
+  using nlohmann::json;
+  json js;
+  for (int i = 0; i < m_todos.size(); i++) {
+    js[i]["todo"] = m_todos[i].get_subject();
+    js[i]["status"] = m_todos[i].get_status();
+    js[i]["id"] = m_todos[i].get_id();
+  }
+  std::fstream out(file);
+  out << js;
 }
 
 void todo_list::load_list(const std::string &file) {

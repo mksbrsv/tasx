@@ -2,7 +2,6 @@
 
 #include "../include/input_parser.h"
 #include "../include/todos.h"
-#include "../include/ui.h"
 #include "fmt/ranges.h"
 
 int main(int argc, char **argv) {
