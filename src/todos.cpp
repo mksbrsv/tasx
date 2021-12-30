@@ -36,6 +36,14 @@ void todo_list::add_todo(const std::string &subject) {
   m_todos.emplace_back(subject, m_todos[m_todos.size() - 1].get_id() + 1);
 }
 
+void todo_list::remove_todo(const int index) {
+  if (index == m_todos.size() - 1) {
+    m_todos.pop_back();
+    return;
+  }
+  m_todos.erase(m_todos.begin() + index);
+}
+
 void todo_list::done(const int index) {
   for (int i = 0; i < m_todos.size(); i++) {
     if (index == i) {
@@ -43,5 +51,7 @@ void todo_list::done(const int index) {
     }
   }
 }
+
+void todo_list::clear() { m_todos.clear(); }
 
 const std::vector<todo_item> todo_list::get_list() const { return m_todos; }
