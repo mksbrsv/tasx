@@ -63,7 +63,7 @@ cmake .. && make
 
 ## Tasks folder
 
-All your tasks should be located in "HOME/.config/tasx/todos.json".
+All your tasks should be located in **"HOME/.config/tasx/todos.json"**.
 So, you should create this file:
 
 ```shell
@@ -82,3 +82,5 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
   }
 ]
 ```
+## TODO
+- [ ] Add windows support
