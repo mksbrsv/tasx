@@ -5,29 +5,29 @@
 ```
 $ tasx -h
 
-"Usage: tasx [<options>...]"
+Usage: tasx [<options>...]
 
-"Options:"
-"none           Show stats"
-"--help, -h     Help menu"
-"--list, -l     Display list of tasks"
-"--done, -d     Mark task done"
-"--new, -n      Create new task"
-"--priority, -p Set priority [id] [priority{1-4}]"
-"--go, -g       Mark task in process"
-"--remove, -r   Remove task from list"
-"--clear, -c    Clear list"
+Options:
+none           Show stats
+--help, -h     Help menu
+--list, -l     Display list of tasks
+--done, -d     Mark task done
+--new, -n      Create new task
+--priority, -p Set priority [id] [priority{1-4}]
+--go, -g       Mark task in process
+--remove, -r   Remove task from list
+--clear, -c    Clear list
 
-"Priority:"
-"1. Low - white color"
-"2. Medium - yellow color"
-"3. High - red color"
-"4. Critical - red bold color"
+Priority:
+1. Low - white color
+2. Medium - yellow color
+3. High - red color
+4. Critical - red bold color
 
-"Status:"
-"1. Todo - [ ]"
-"2. In process - [*]"
-"3. Done - [x]";
+Status:
+1. Todo - [ ]
+2. In process - [*]
+3. Done - [x]
 ```
 
 ## Dependencies
@@ -82,5 +82,7 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
   }
 ]
 ```
+
 ## TODO
+
 - [ ] Add windows support
