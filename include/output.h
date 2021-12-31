@@ -23,7 +23,7 @@ void high_priority(const todo_item& item, std::string& formatted_string);
 void critical_priority(const todo_item& item, std::string& formatted_string);
 void done_todo(const todo_item& item, std::string& formatted_string);
 
-std::tuple<int, int, int> calc_stats(const todo_list& list);
+std::tuple<int, int, int, int> calc_stats(const todo_list& list);
 std::string stats(const todo_list& list);
 
 void colors();

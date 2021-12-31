@@ -7,7 +7,7 @@ void todo_list::save_list(const std::string &file) {
   json js;
   for (int i = 0; i < m_todos.size(); i++) {
     js[i]["todo"] = m_todos[i].get_subject();
-    js[i]["status"] = m_todos[i].get_status();
+    js[i]["status"] = static_cast<int>(m_todos[i].get_status());
     js[i]["id"] = m_todos[i].get_id();
     js[i]["priority"] = static_cast<int>(m_todos[i].get_priority());
   }
@@ -44,7 +44,7 @@ void todo_list::remove_todo(const int index) {
 void todo_list::done(const int index) {
   for (int i = 0; i < m_todos.size(); i++) {
     if (index == i) {
-      m_todos[i].set_status(true);
+      m_todos[i].set_status(status::done);
     }
   }
 }
@@ -57,6 +57,21 @@ void todo_list::set_priority(const int index, priority pr) {
   }
 }
 
+void todo_list::set_status(const int index, status st) {
+  for (int i = 0; i < m_todos.size(); i++) {
+    if (index == i) {
+      m_todos[i].set_status(st);
+    }
+  }
+}
+
 void todo_list::clear() { m_todos.clear(); }
+
+bool todo_list::is_no_tasks_todo() const {
+  auto it = std::find_if(
+      m_todos.begin(), m_todos.end(),
+      [](const todo_item &t) { return t.get_status() != status::done; });
+  return it == m_todos.end();
+}
 
 const std::vector<todo_item> todo_list::get_list() const { return m_todos; }

@@ -12,16 +12,18 @@
 
 enum priority : uint8_t { low = 1, medium = 2, high = 3, critical = 4 };
 
+enum status : uint8_t { todo = 1, in_process = 2, done = 3 };
+
 class todo_item {
  public:
   todo_item() = default;
-  todo_item(const std::string& subject, int id, bool status = false,
+  todo_item(const std::string& subject, int id, status st = status::todo,
             priority pr = priority::low);
   todo_item(const todo_item& todo) = default;
   todo_item& operator=(const todo_item& todo) = default;
-  void set_status(bool status);
+  void set_status(status st);
   const std::string str_status() const;
-  bool get_status() const;
+  status get_status() const;
   int get_id() const;
   priority get_priority() const;
   void set_priority(priority pr);
@@ -34,7 +36,7 @@ class todo_item {
  private:
   std::string m_subject;
   int m_id;
-  bool m_status;
+  status m_status;
   priority m_priority;
 };
 

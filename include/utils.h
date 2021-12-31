@@ -16,14 +16,19 @@ const std::string HELP =
     "--list, -l     Display list of tasks\n"
     "--done, -d     Mark task done\n"
     "--new, -n      Create new task\n"
-    "--priority, -n Set priority [id] [priority{1-4}]\n"
+    "--priority, -p Set priority [id] [priority{1-4}]\n"
+    "--go, -g       Mark task in process\n"
     "--remove, -r   Remove task from list\n"
     "--clear, -c    Clear list\n\n"
     "Priority:\n"
     "1. Low - white color\n"
     "2. Medium - yellow color\n"
     "3. High - red color\n"
-    "4. Critical - red bold color\n";
+    "4. Critical - red bold color\n"
+    "Status:\n\n"
+    "1. Todo - [ ]\n"
+    "2. In process - [*]\n"
+    "3. Done - [x]\n";
 
 }  // namespace utils
 

@@ -1,12 +1,11 @@
 #include "../include/todo.h"
 
-todo_item::todo_item(const std::string &subject, int id, bool status,
-                     priority pr)
-    : m_subject(subject), m_id(id), m_status(status), m_priority(pr) {}
+todo_item::todo_item(const std::string &subject, int id, status st, priority pr)
+    : m_subject(subject), m_id(id), m_status(st), m_priority(pr) {}
 
-bool todo_item::get_status() const { return m_status; }
+status todo_item::get_status() const { return m_status; }
 
-void todo_item::set_status(bool status) { m_status = status; }
+void todo_item::set_status(status st) { m_status = st; }
 
 std::string todo_item::get_subject() const { return m_subject; }
 
@@ -17,20 +16,28 @@ priority todo_item::get_priority() const { return m_priority; }
 void todo_item::set_priority(priority pr) { m_priority = pr; }
 
 const std::string todo_item::str_status() const {
-  return m_status ? "[x]" : "[ ]";
+  switch (m_status) {
+    case status::todo: {
+      return "[ ]";
+    }
+    case status::in_process: {
+      return "[*]";
+    }
+    case status::done: {
+      return "[x]";
+    }
+  }
 }
 
 std::string todo_item::to_string() const {
-  std::string status = m_status ? "[x]" : "[ ]";
+  std::string status = str_status();
   std::string result = status + " " + m_subject;
   return result;
 }
 
 std::ofstream &operator<<(std::ofstream &out, const todo_item &todo) {
-  if (todo.m_status) {
-    out << "[x]" << todo.m_subject << "\n";
-  } else {
-    out << "[ ]" << todo.m_subject << "\n";
-  }
+  std::string status = todo.str_status();
+  out << status << todo.m_subject << "\n";
+  out << status << todo.m_subject << "\n";
   return out;
 }
