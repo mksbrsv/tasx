@@ -2,6 +2,7 @@
 #define TODO_H
 #include <fmt/format.h>
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -9,16 +10,21 @@
 #include <string_view>
 #include <variant>
 
+enum priority : uint8_t { low = 1, medium = 2, high = 3, critical = 4 };
+
 class todo_item {
  public:
   todo_item() = default;
-  todo_item(const std::string& subject, int id, bool status = false);
+  todo_item(const std::string& subject, int id, bool status = false,
+            priority pr = priority::low);
   todo_item(const todo_item& todo) = default;
   todo_item& operator=(const todo_item& todo) = default;
   void set_status(bool status);
   const std::string str_status() const;
   bool get_status() const;
   int get_id() const;
+  priority get_priority() const;
+  void set_priority(priority pr);
   std::string get_subject() const;
   std::string to_string() const;
 
@@ -29,6 +35,7 @@ class todo_item {
   std::string m_subject;
   int m_id;
   bool m_status;
+  priority m_priority;
 };
 
 template <>
@@ -48,8 +55,8 @@ constexpr auto fmt::formatter<todo_item>::parse(ParseContext& ctx) {
 template <typename FormatContext>
 auto fmt::formatter<todo_item>::format(const todo_item& item,
                                        FormatContext& ctx) {
-  return fmt::format_to(ctx.out(), "{0}. {1} {2}\n", item.get_id(),
-                        item.str_status(), item.get_subject());
+  return fmt::format_to(ctx.out(), "{} {}\n", item.str_status(),
+                        item.get_subject());
 }
 
 // template <>

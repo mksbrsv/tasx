@@ -19,6 +19,7 @@ class todo_list {
   void add_todo(const std::string &subject);
   void remove_todo(const int index);
   void done(const int index);
+  void set_priority(const int index, priority pr);
   void clear();
   const std::vector<todo_item> get_list() const;
 
