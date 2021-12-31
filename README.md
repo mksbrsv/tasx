@@ -30,3 +30,25 @@ cmake .. && make
 ```shell
 ./tasx -h
 ```
+
+## Tasks folder
+
+All your tasks should be located in "HOME/.config/tasx/todos.json".
+So, you should create this file:
+
+```shell
+mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
+```
+
+### File format
+
+```json
+[
+  {
+    "id": number,
+    "priority": number,
+    "status": boolean,
+    "todo": string
+  }
+]
+```
