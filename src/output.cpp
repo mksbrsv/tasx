@@ -55,6 +55,34 @@ void critical_priority(const todo_item& item, std::string& formatted_string) {
       fg(fmt::terminal_color::red) | fmt::emphasis::bold, "{}", item);
 }
 
+std::tuple<int, int, int> calc_stats(const todo_list& list) {
+  int done = 0;
+  int todo = 0;
+  int progress = 0;
+  for (auto& ti : list.get_list()) {
+    if (ti.get_status())
+      done++;
+    else
+      todo++;
+  }
+  progress = (done * 100) / (todo + done);
+  return {done, todo, progress};
+}
+
+std::string stats(const todo_list& list) {
+  auto [done, todo, progress] = output::calc_stats(list);
+  std::string done_str =
+      fmt::format(fg(fmt::terminal_color::green), "{}", done);
+  std::string todo_str =
+      fmt::format(fg(fmt::terminal_color::magenta), "{}", todo);
+  std::string progress_str =
+      fmt::format(fg(fmt::terminal_color::blue), "{}%", progress);
+  std::string stats =
+      fmt::format("  {} of tasks complete\n  {} done  {} pending", progress_str,
+                  done_str, todo_str);
+  return stats;
+}
+
 // void colors() {
 //   fmt::print(fg(fmt::terminal_color::black), "{}", "black\n");
 //   fmt::print(fg(fmt::terminal_color::red), "{}", "red\n");
