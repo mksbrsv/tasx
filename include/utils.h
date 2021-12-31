@@ -6,8 +6,7 @@
 namespace utils {
 const std::string HOME = std::getenv("HOME") ? std::getenv("HOME") : ".";
 
-const std::string TASX_FILE =
-    HOME + "/code/cpp/tasx/todo.json";  // TODO: change folder to config folder
+const std::string TASX_FILE = HOME + "/.config/tasx/todos.json";
 
 const std::string HELP =
     "Usage:\n tasx [<options>...]\n\n"
