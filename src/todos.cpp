@@ -33,6 +33,14 @@ void todo_list::add_todo(const std::string &subject) {
   m_todos.emplace_back(subject, m_todos[m_todos.size() - 1].get_id() + 1);
 }
 
+void todo_list::edit_todo(const int index, const std::string &subject) {
+  for (int i = 0; i < m_todos.size(); i++) {
+    if (index == i) {
+      m_todos[i].set_subject(subject);
+    }
+  }
+}
+
 void todo_list::remove_todo(const int index) {
   if (index == m_todos.size() - 1) {
     m_todos.pop_back();
@@ -74,4 +82,11 @@ bool todo_list::is_no_tasks_todo() const {
   return it == m_todos.end();
 }
 
-const std::vector<todo_item> todo_list::get_list() const { return m_todos; }
+const std::vector<todo_item> &todo_list::get_list() const { return m_todos; }
+const std::vector<todo_item> todo_list::get_list_without_done() const {
+  std::vector<todo_item> list_without_done;
+  std::copy_if(
+      m_todos.begin(), m_todos.end(), std::back_inserter(list_without_done),
+      [](const todo_item &ti) { return ti.get_status() != status::done; });
+  return list_without_done;
+}

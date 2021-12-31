@@ -1,10 +1,14 @@
 #include <algorithm>
-#include <sstream>
+#include <cctype>
 
 #include "../include/input_parser.h"
 #include "../include/output.h"
 #include "../include/todos.h"
 #include "fmt/ranges.h"
+
+/*
+ * TODO: fix clear arg
+ * */
 
 int main(int argc, char** argv) {
   input_parser input(argc, argv);
@@ -16,12 +20,23 @@ int main(int argc, char** argv) {
 
   } else if (input.exist("--list") || input.exist("-l")) {
     fmt::print(fmt::emphasis::bold, "{}", "Tasks:\n");
-    for (int i = 0; i < todos.get_list().size(); i++) {
-      std::string id =
-          fmt::format(fg(fmt::terminal_color::bright_black), "  {}.", i);
-      std::string item = output::low_priority(todos.get_list()[i]);
-      output::choose_priority(todos.get_list()[i], item);
-      fmt::print("{} {}", id, item);
+    if (input.exist("--hidden") || input.exist("-hd")) {
+      auto list_hidden = todos.get_list_without_done();
+      for (int i = 0; i < list_hidden.size(); i++) {
+        std::string id =
+            fmt::format(fg(fmt::terminal_color::bright_black), "  {}.", i);
+        std::string item = output::low_priority(list_hidden[i]);
+        output::choose_priority(list_hidden[i], item);
+        fmt::print("{} {}", id, item);
+      }
+    } else {
+      for (int i = 0; i < todos.get_list().size(); i++) {
+        std::string id =
+            fmt::format(fg(fmt::terminal_color::bright_black), "  {}.", i);
+        std::string item = output::low_priority(todos.get_list()[i]);
+        output::choose_priority(todos.get_list()[i], item);
+        fmt::print("{} {}", id, item);
+      }
     }
     fmt::print("\n{}", output::stats(todos));
 
@@ -50,6 +65,13 @@ int main(int argc, char** argv) {
   } else if (input.exist("--go") || input.exist("-g")) {
     auto todo_it = input.get(input.exist("-g") ? "-g" : "--go");
     todos.set_status(std::stoi(todo_it), status::in_process);
+
+  } else if (input.exist("--edit") || input.exist("-e")) {
+    auto command = input.get(input.exist("-e") ? "-e" : "--edit");
+    auto it = command.find(" ");
+    auto todo_id = command.substr(0, it);
+    auto subject = command.substr(it + 1, command.length() - 1);
+    todos.edit_todo(std::stoi(todo_id), subject);
 
   } else {
     fmt::print("{}", output::stats(todos));

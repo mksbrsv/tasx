@@ -11,10 +11,12 @@ Options:
 none           Show stats
 --help, -h     Help menu
 --list, -l     Display list of tasks
+--hidden, -hd  Display list with hidden done tasks
 --done, -d     Mark task done
 --new, -n      Create new task
 --priority, -p Set priority [id] [priority{1-4}]
 --go, -g       Mark task in process
+--edit, -g     Edit task [id] [subject]
 --remove, -r   Remove task from list
 --clear, -c    Clear list
 

@@ -28,6 +28,7 @@ class todo_item {
   priority get_priority() const;
   void set_priority(priority pr);
   std::string get_subject() const;
+  void set_subject(const std::string& subject);
   std::string to_string() const;
 
   ~todo_item() = default;

@@ -9,6 +9,8 @@ void todo_item::set_status(status st) { m_status = st; }
 
 std::string todo_item::get_subject() const { return m_subject; }
 
+void todo_item::set_subject(const std::string &subject) { m_subject = subject; }
+
 int todo_item::get_id() const { return m_id; }
 
 priority todo_item::get_priority() const { return m_priority; }
