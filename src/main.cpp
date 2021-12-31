@@ -6,6 +6,10 @@
 #include "../include/todos.h"
 #include "fmt/ranges.h"
 
+/*
+ * TODO: add stats for no options;
+ * */
+
 int main(int argc, char** argv) {
   input_parser input(argc, argv);
   todo_list todos;

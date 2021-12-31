@@ -2,7 +2,7 @@
 #define OUTPUT_H
 #include <fmt/color.h>
 
-#include "todo.h"
+#include "todos.h"
 
 /*
 Priorities:
@@ -20,6 +20,8 @@ void med_priority(const todo_item& item, std::string& formatted_string);
 void high_priority(const todo_item& item, std::string& formatted_string);
 void critical_priority(const todo_item& item, std::string& formatted_string);
 void done_todo(const todo_item& item, std::string& formatted_string);
+
+void stats(const todo_list& list);
 
 void colors();
 }  // namespace output
