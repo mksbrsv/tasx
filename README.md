@@ -9,6 +9,7 @@ Usage: tasx [<options>...]
 
 Options:
 --help, -h     Help menu
+<<<<<<< HEAD
 none           Show stats
 list           Display list of tasks
 hidden         Display list with hidden done tasks
@@ -19,6 +20,17 @@ do             Mark task in process
 edit           Edit task [id] [subject]
 delete         Remove task from list
 clear          Clear list
+=======
+--list, -l     Display list of tasks
+--hidden, -hd  Display list with hidden done tasks
+--done, -d     Mark task done
+--new, -n      Create new task
+--priority, -p Set priority [id] [priority{1-4}]
+--go, -g       Mark task in process
+--edit, -e     Edit task [id] [subject]
+--remove, -r   Remove task from list
+--clear, -c    Clear list
+>>>>>>> 2c31f22561d875eaebf798b0755fbdd7eab31fec
 
 Priority:
 1. Low - white color
