@@ -8,17 +8,17 @@ $ tasx -h
 Usage: tasx [<options>...]
 
 Options:
-none           Show stats
 --help, -h     Help menu
---list, -l     Display list of tasks
---hidden, -hd  Display list with hidden done tasks
---done, -d     Mark task done
---new, -n      Create new task
---priority, -p Set priority [id] [priority{1-4}]
---go, -g       Mark task in process
---edit, -g     Edit task [id] [subject]
---remove, -r   Remove task from list
---clear, -c    Clear list
+none           Show stats
+list           Display list of tasks
+hidden         Display list with hidden done tasks
+done           Mark task done
+add            Create new task
+pr             Set priority [id] [priority{1-4}]
+do             Mark task in process
+edit           Edit task [id] [subject]
+delete         Remove task from list
+clear          Clear list
 
 Priority:
 1. Low - white color
