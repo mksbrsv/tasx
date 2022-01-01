@@ -1,3 +1,5 @@
+#include <fmt/color.h>
+
 #include <algorithm>
 #include <cctype>
 
@@ -14,7 +16,12 @@
 int main(int argc, char** argv) {
   input_parser input(argc, argv);
   todo_list todos;
-  todos.load_list();
+  try {
+    todos.load_list();
+  } catch (std::logic_error& ex) {
+    fmt::print(fg(fmt::terminal_color::red) | fmt::emphasis::bold, "ERROR:");
+    fmt::print("{}", ex.what());
+  }
 
   if (input.exist("--help") || input.exist("-h")) {
     fmt::print("{}", utils::HELP);
@@ -79,5 +86,10 @@ int main(int argc, char** argv) {
   }
   if (todos.is_no_tasks_todo()) todos.clear();
 
-  todos.save_list();
+  try {
+    todos.save_list();
+  } catch (std::logic_error& ex) {
+    fmt::print(fg(fmt::terminal_color::red) | fmt::emphasis::bold, "ERROR:");
+    fmt::print("{}", ex.what());
+  }
 }

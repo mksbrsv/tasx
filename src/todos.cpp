@@ -1,12 +1,13 @@
 #include "../include/todos.h"
 
 #include <iterator>
+#include <stdexcept>
 
 void todo_list::save_list(const std::string &file) {
   using nlohmann::json;
   std::fstream out(file);
   if (!out.is_open()) {
-    return;
+    throw std::logic_error("Can't open file");
   }
   if (m_todos.empty()) return;
   json js;
@@ -22,7 +23,9 @@ void todo_list::save_list(const std::string &file) {
 void todo_list::load_list(const std::string &file) {
   using nlohmann::json;
   std::fstream in(file);
-  if (!in.is_open()) return;
+  if (!in.is_open()) {
+    throw std::logic_error("File doesn't exist. You should create it");
+  }
   json js;
   in >> js;
   for (int i = 0; i < js.size(); i++) {
