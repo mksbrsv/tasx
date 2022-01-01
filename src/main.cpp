@@ -8,11 +8,6 @@
 #include "../include/todos.h"
 #include "fmt/ranges.h"
 
-/*
- * TODO: fix clear arg
- * TODO: add throw if file isn't opened
- * */
-
 int main(int argc, char** argv) {
   input_parser input(argc, argv);
   todo_list todos;

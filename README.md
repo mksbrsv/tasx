@@ -88,3 +88,5 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
 ## TODO
 
 - [ ] Add windows support
+- [ ] Add dates for tasks
+- [ ] Add groups
