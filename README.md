@@ -96,4 +96,4 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
 ## TODO
 
 - [ ] Add windows support
-- [*] Add groups
+- [x] Add groups
