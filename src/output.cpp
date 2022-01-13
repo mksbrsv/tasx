@@ -9,6 +9,7 @@ void choose_priority(const todo_item& item, std::string& formatted_string) {
   auto pr = item.get_priority();
   switch (pr) {
     case priority::low: {
+      low_priority(item, formatted_string);
       break;
     }
     case priority::medium: {
@@ -36,10 +37,8 @@ void done_todo(const todo_item& item, std::string& formatted_string) {
         "{}", item);
   }
 }
-
-std::string low_priority(const todo_item& item) {
-  std::string formatted_string = fmt::format("{}", item);
-  return formatted_string;
+void low_priority(const todo_item& item, std::string& formatted_string) {
+  formatted_string = fmt::format(fg(fmt::terminal_color::white), "{}", item);
 }
 
 void med_priority(const todo_item& item, std::string& formatted_string) {
@@ -55,25 +54,31 @@ void critical_priority(const todo_item& item, std::string& formatted_string) {
       fg(fmt::terminal_color::red) | fmt::emphasis::bold, "{}", item);
 }
 
-std::tuple<int, int, int, int> calc_stats(const todo_list& list) {
+std::tuple<int, int, int, int> calc_stats(const todo_groups& groups) {
   int done = 0;
   int todo = 0;
   int in_process = 0;
   int progress = 0;
-  for (auto& ti : list.get_list()) {
-    if (ti.get_status() == status::done)
-      done++;
-    else if (ti.get_status() == status::in_process)
-      in_process++;
-    else
-      todo++;
+  for (int i = 0; i < groups.amount(); i++) {
+    for (auto& ti : groups[i].list.get_list()) {
+      if (ti.get_status() == status::done)
+        done++;
+      else if (ti.get_status() == status::in_process)
+        in_process++;
+      else
+        todo++;
+    }
   }
   progress = (done * 100) / (todo + done + in_process);
   return {done, todo, in_process, progress};
 }
 
-std::string stats(const todo_list& list) {
-  auto [done, todo, in_process, progress] = output::calc_stats(list);
+std::string stats(const todo_groups& groups) {
+  if (groups.empty())
+    return fmt::format(fg(fmt::terminal_color::blue), " {}",
+                       "There is no tasks to do.\n It's time to do something");
+  auto [done, todo, in_process, progress] = output::calc_stats(groups);
+  int all_tasks = groups.amount_tasks();
   std::string done_str =
       fmt::format(fg(fmt::terminal_color::green), "{}", done);
   std::string todo_str =
@@ -83,7 +88,7 @@ std::string stats(const todo_list& list) {
   std::string progress_str =
       fmt::format(fg(fmt::terminal_color::blue), "{}%", progress);
   std::string stats;
-  if (done == list.get_list().size())
+  if (done == all_tasks)
     stats = fmt::format(fg(fmt::terminal_color::blue), "  {}",
                         "All tasks done. It's time to cheer yourself up");
   else if (done + todo + in_process == 0)

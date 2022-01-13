@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <cctype>
+#include <typeinfo>
 
+#include "../include/group.h"
 #include "../include/input_parser.h"
 #include "../include/output.h"
 #include "../include/todos.h"
@@ -10,79 +12,163 @@
 
 int main(int argc, char** argv) {
   input_parser input(argc, argv);
-  todo_list todos;
+  todo_groups groups;
   try {
-    todos.load_list();
+    groups.init();
   } catch (std::logic_error& ex) {
     fmt::print(fg(fmt::terminal_color::red) | fmt::emphasis::bold, "ERROR:");
     fmt::print("{}", ex.what());
   }
 
-  if (input.exist("--help") || input.exist("-h")) {
+  if (input.exist("-help")) {
     fmt::print("{}", utils::HELP);
 
-  } else if (input.exist("list")) {
+  } else if (input.exist("-list")) {
     fmt::print(fmt::emphasis::bold, "{}", "Tasks:\n");
-    if (input.exist("hidden")) {
-      auto list_hidden = todos.get_list_without_done();
-      for (int i = 0; i < list_hidden.size(); i++) {
-        std::string id = fmt::format(fg(fmt::terminal_color::bright_black),
-                                     "  {}.", list_hidden[i].get_id());
-        std::string item = output::low_priority(list_hidden[i]);
-        output::choose_priority(list_hidden[i], item);
-        fmt::print("{} {}", id, item);
+    if (input.exist("-hidden")) {
+      for (int i = 0; i < groups.amount(); i++) {
+        fmt::print(fmt::emphasis::bold | fmt::emphasis::underline |
+                       fg(fmt::terminal_color::bright_black),
+                   "@{}\n", groups[i].name);
+        if (groups[i].list.empty()) continue;
+        auto list_hidden = groups[i].list.get_list_without_done();
+        for (int j = 0; j < list_hidden.size(); j++) {
+          std::string id = fmt::format(fg(fmt::terminal_color::bright_black),
+                                       "  {}.", list_hidden[j].get_id());
+          std::string item;
+          output::choose_priority(list_hidden[j], item);
+          fmt::print("{} {}", id, item);
+        }
       }
     } else {
-      for (int i = 0; i < todos.get_list().size(); i++) {
-        std::string id = fmt::format(fg(fmt::terminal_color::bright_black),
-                                     "  {}.", todos.get_list()[i].get_id());
-        std::string item = output::low_priority(todos.get_list()[i]);
-        output::choose_priority(todos.get_list()[i], item);
-        fmt::print("{} {}", id, item);
+      for (int i = 0; i < groups.amount(); i++) {
+        fmt::print(fmt::emphasis::bold | fmt::emphasis::underline |
+                       fg(fmt::terminal_color::bright_black),
+                   "@{}\n", groups[i].name);
+        if (groups[i].list.empty()) continue;
+        for (int j = 0; j < groups[i].list.amount(); j++) {
+          std::string id = fmt::format(fg(fmt::terminal_color::bright_black),
+                                       "  {}.", groups[i].list[j].get_id());
+          std::string item;
+          output::choose_priority(groups[i].list[j], item);
+          fmt::print("{} {}", id, item);
+        }
+      }
+      fmt::print("\n{}", output::stats(groups));  // TODO: fix stats
+    }
+    //
+    //
+    // done, add, delete, clear, pr, edit, undo, do
+    // done - 2 args - gi ti
+    // add - 2 args - gi s
+    // delete - 2 args - gi ti
+    // clear - 1 arg opt - gi
+    // pr - 3 args - gi ti s - [0] - c [1] - gi
+    // edit 3 args - gi ti s
+    // undo - 2 args - gi ti
+    // do - 2 args - gi ti
+    // if tok[1] does not contain word beginning with @ - group = board
+    // if tok[0] is not add and clear - get tok[2] as id
+    // if tok[0] is edit or pr - get subject
+    //
+
+  } else if (input.exist("-done")) {  // format: tasx done @group_name todo_id
+    auto [group_name, todo_id, subject] = input.parse_args();
+    auto [ec, msg] = groups[group_name].list.set_status(todo_id, status::done);
+    if (static_cast<bool>(ec)) {
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Status updated successfully");
+    } else {
+      fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+    }
+  } else if (input.exist(
+                 "-add")) {  // format: tasx add @group_name todo_subject
+    if (input.exist("-group")) {
+      auto [group_name, todo_id, subject] = input.parse_args();
+      groups.add_group(subject);
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Group added successfully");
+    } else {
+      auto [group_name, todo_id, subject] = input.parse_args();
+      auto [ec, msg] = groups[group_name].list.add_todo(subject);
+      if (static_cast<bool>(ec)) {
+        fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                   "Task added successfully");
+      } else {
+        fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
       }
     }
-    fmt::print("\n{}", output::stats(todos));
+  } else if (input.exist("-delete")) {
+    if (input.exist("-group")) {
+      auto [group_name, todo_id, subject] = input.parse_args();
+      groups.remove_group(subject);
+    } else {
+      auto [group_name, todo_id, subject] = input.parse_args();
+      auto [ec, msg] = groups[group_name].list.remove_todo(todo_id);
+      if (static_cast<bool>(ec)) {
+        fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                   "Task removed successfully");
+      } else {
+        fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+      }
+    }
+    //
+  } else if (input.exist("-clear")) {
+    auto [group_name, todo_id, subject] = input.parse_args();
+    groups[group_name].list.clear();
+    fmt::print(fg(fmt::terminal_color::green),
+               "\nGroup @{} cleared successfully", group_name);
 
-  } else if (input.exist("done")) {
-    auto done_id = input.get("done");
-    todos.set_status(std::stoi(done_id), status::done);
+  } else if (input.exist("-pr")) {
+    auto [group_name, todo_id, subject] = input.parse_args();
+    auto [ec, msg] = groups[group_name].list.set_priority(
+        todo_id, priority(std::stoi(subject)));
+    if (static_cast<bool>(ec)) {
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Priority updated successfully");
+    } else {
+      fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+    }
 
-  } else if (input.exist("add")) {
-    auto new_todo = input.get("add");
-    todos.add_todo(new_todo);
-
-  } else if (input.exist("delete")) {
-    auto remove_id = input.get("delete");
-    todos.remove_todo(std::stoi(remove_id));
-
-  } else if (input.exist("clear")) {
-    todos.clear();
-
-  } else if (input.exist("pr")) {
-    auto command = input.get("pr");
-    auto it = command.find(" ");
-    auto todo_id = command.substr(0, it);
-    auto pr = command.substr(it + 1, command.length() - 1);
-    todos.set_priority(std::stoi(todo_id), priority(std::stoi(pr)));
-
-  } else if (input.exist("do")) {
-    auto todo_it = input.get("do");
-    todos.set_status(std::stoi(todo_it), status::in_process);
-
-  } else if (input.exist("edit")) {
-    auto command = input.get("edit");
-    auto it = command.find(" ");
-    auto todo_id = command.substr(0, it);
-    auto subject = command.substr(it + 1, command.length() - 1);
-    todos.edit_todo(std::stoi(todo_id), subject);
+  } else if (input.exist("-do")) {
+    auto [group_name, todo_id, subject] = input.parse_args();
+    auto [ec, msg] =
+        groups[group_name].list.set_status(todo_id, status::in_process);
+    if (static_cast<bool>(ec)) {
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Status updated successfully");
+    } else {
+      fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+    }
+  } else if (input.exist("-undo")) {
+    auto [group_name, todo_id, subject] = input.parse_args();
+    auto [ec, msg] = groups[group_name].list.set_status(todo_id, status::todo);
+    if (static_cast<bool>(ec)) {
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Status updated successfully");
+    } else {
+      fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+    }
+  } else if (input.exist("-edit")) {
+    auto [group_name, todo_id, subject] = input.parse_args();
+    auto [ec, msg] = groups[group_name].list.edit_todo(todo_id, subject);
+    if (static_cast<bool>(ec)) {
+      fmt::print(fg(fmt::terminal_color::green), "\n{}",
+                 "Task edited successfully");
+    } else {
+      fmt::print(fg(fmt::terminal_color::red), "\nERROR: {}", msg);
+    }
 
   } else {
-    fmt::print("{}", output::stats(todos));
+    fmt::print("{}", output::stats(groups));
   }
-  if (todos.is_no_tasks_todo()) todos.clear();
-
+  for (int i = 0; i < groups.amount(); i++) {
+    if (groups[i].list.check_tasks()) {
+      groups[i].list.clear();
+    }
+  }
   try {
-    todos.save_list();
+    groups.close();
   } catch (std::logic_error& ex) {
     fmt::print(fg(fmt::terminal_color::red) | fmt::emphasis::bold, "ERROR:");
     fmt::print("{}", ex.what());

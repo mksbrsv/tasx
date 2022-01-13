@@ -10,9 +10,9 @@
 #include <string_view>
 #include <variant>
 
-enum priority : uint8_t { low = 1, medium = 2, high = 3, critical = 4 };
+enum class priority : uint8_t { low = 1, medium = 2, high = 3, critical = 4 };
 
-enum status : uint8_t { todo = 1, in_process = 2, done = 3 };
+enum class status : uint8_t { todo = 1, in_process = 2, done = 3 };
 
 class todo_item {
  public:
