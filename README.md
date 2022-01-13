@@ -1,5 +1,10 @@
 # Tasx - simple terminal todo manager
 
+## Disclaimer
+I made this small application for learning programming. This application is written in C++. 
+
+I will be glad if you find this application useful for yourself. If you have any problems using it, then leave an issue or make a pull request.
+
 ## Usage
 
 ```
