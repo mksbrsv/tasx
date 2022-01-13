@@ -58,7 +58,7 @@ cmake .. && make
 4. Run app
 
 ```shell
-./tasx -h
+./tasx -help
 ```
 
 ## Tasks folder
