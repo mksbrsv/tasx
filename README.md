@@ -89,7 +89,7 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
 ]
 ```
 
-### Inspiration
+## Inspiration
 
 [taskbook](https://github.com/klaussinani/taskbook)
 
