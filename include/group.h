@@ -3,8 +3,6 @@
 
 #include "todos.h"
 
-enum class action : uint8_t { done = 0, edit, add, del, priority };
-
 struct group_type {
   group_type() = default;
   group_type(todo_list list, std::string name, int id)
