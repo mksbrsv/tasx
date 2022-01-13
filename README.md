@@ -6,30 +6,28 @@
 $ tasx -h
 
 Usage: tasx [<options>...]
-
 Options:
---help, -h     Help menu
-none           Show stats
-list           Display list of tasks
-hidden         Display list with hidden done tasks
-done           Mark task done
-add            Create new task
-pr             Set priority [id] [priority{1-4}]
-do             Mark task in process
-edit           Edit task [id] [subject]
-delete         Remove task from list
-clear          Clear list
-
+  -help            Help menu
+  none             Show stats
+  -list [-hidden]  Display list of tasks, display with hidden done tasks
+  -done            Mark task done: [@group_name] id
+  -add [-group]    Create new task [@group_name], add new group [group_name]
+  -pr              Set priority [@group_name] id priority{1-4}
+  -do              Mark task in process [@group_name] id
+  -edit            Edit task [@group_name] id subject
+  -delete [-group] Remove task from list [@group_name] id, remove group [group_name]
+  -clear           Clear list [@group_name]
+Addition:
+  If no group name provided, program will use default group - 'Board'
 Priority:
-1. Low - white color
-2. Medium - yellow color
-3. High - red color
-4. Critical - red bold color
-
+  1. Low - white color
+  2. Medium - yellow color
+  3. High - red color
+  4. Critical - red bold color
 Status:
-1. Todo - [ ]
-2. In process - [*]
-3. Done - [x]
+  1. Todo - [ ]
+  2. In process - [*]
+  3. Done - [x]
 ```
 
 ## Dependencies
@@ -78,15 +76,24 @@ mkdir -p ~/.config/tasx && touch ~/.config/tasx/todo.json
 [
   {
     "id": number,
-    "priority": number,
-    "status": number,
-    "todo": string
+    "name": string
+    "list": [
+      {
+        "id": number,
+        "priority": number,
+        "status": number,
+        "todo": string
+      }
+    ]
   }
 ]
 ```
 
+### Inspiration
+
+[taskbook](https://github.com/klaussinani/taskbook)
+
 ## TODO
 
 - [ ] Add windows support
-- [ ] Add dates for tasks
-- [ ] Add groups
+- [*] Add groups
